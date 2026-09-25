@@ -9,52 +9,6 @@
 
 
 
-<style id="wa-dz-counter-styles">
-  #wa-dz-views-badge {
-    position: fixed !important;
-    top: 12px !important;
-    right: 12px !important;
-    z-index: 2147483000 !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    background: #18181b !important;
-    color: #fff !important;
-    font-family: Tajawal, system-ui, sans-serif !important;
-    font-size: 12px !important;
-    font-weight: 800 !important;
-    padding: 8px 14px !important;
-    border-radius: 9999px !important;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
-    border: 1px solid rgba(34,197,94,0.55) !important;
-    direction: rtl !important;
-    pointer-events: none !important;
-    line-height: 1.2 !important;
-  }
-  #wa-dz-views-badge .wa-dz-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: #22c55e; flex-shrink: 0;
-    box-shadow: 0 0 8px rgba(34,197,94,0.9);
-    animation: wa-dz-pulse 1.4s infinite;
-  }
-  @keyframes wa-dz-pulse {
-    0%,100% { opacity: 1; } 50% { opacity: 0.35; }
-  }
-  #wa-dz-views-badge .wa-dz-count {
-    color: #86efac !important;
-    font-size: 14px !important;
-    font-weight: 900 !important;
-    font-variant-numeric: tabular-nums;
-    min-width: 1.2em;
-    text-align: center;
-  }
-  #wa-dz-views-badge img {
-    height: 18px !important;
-    width: auto !important;
-    display: block !important;
-    border: 0 !important;
-  }
-</style>
 </head>
 <body>
   <div id="root"></div>
@@ -86,108 +40,118 @@ Error generating stack: `+o.message+`
 
 
 
-<div id="wa-dz-views-badge" data-wa-dz-counter="1" aria-live="polite" title="زيارات الصفحة">
+
+<style id="wa-dz-counter-styles">
+  #wa-dz-views-badge {
+    position: fixed !important;
+    top: 12px !important;
+    right: 12px !important;
+    z-index: 2147483000 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    background: #18181b !important;
+    color: #fff !important;
+    font-family: Tajawal, system-ui, sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    padding: 6px 12px !important;
+    border-radius: 9999px !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
+    border: 1px solid rgba(34,197,94,0.55) !important;
+    direction: rtl !important;
+    line-height: 1 !important;
+  }
+  #wa-dz-views-badge .wa-dz-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #22c55e; flex-shrink: 0;
+    box-shadow: 0 0 8px rgba(34,197,94,0.9);
+    animation: wa-dz-pulse 1.4s infinite;
+  }
+  @keyframes wa-dz-pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+  #wa-dz-views-badge img {
+    height: 20px !important;
+    width: auto !important;
+    display: block !important;
+    border: 0 !important;
+    border-radius: 3px;
+  }
+  #wa-dz-views-badge .wa-dz-count {
+    color: #86efac !important;
+    font-size: 14px !important;
+    font-weight: 900 !important;
+    font-variant-numeric: tabular-nums;
+  }
+  #wa-dz-views-badge.wa-dz-js-ready img.wa-dz-img-counter { display: none !important; }
+  #wa-dz-views-badge:not(.wa-dz-js-ready) .wa-dz-js-only { display: none !important; }
+</style>
+<div id="wa-dz-views-badge" title="زيارات الصفحة">
   <span class="wa-dz-dot"></span>
-  <span>👁</span>
-  <span class="wa-dz-count" id="wa-dz-views-num">…</span>
-  <span>زيارة</span>
+  <!-- Always works: image badge (no JS fetch) -->
+  <img class="wa-dz-img-counter"
+       src="https://visitor-badge.laobi.icu/badge?page_id=Mourad-Soltani.whatsapp-landing-dz&left_text=%D8%B2%D9%8A%D8%A7%D8%B1%D8%A9&left_color=18181b&right_color=16a34a"
+       alt="زيارات"
+       loading="eager"
+       referrerpolicy="no-referrer-when-downgrade" />
+  <!-- Enhanced number when JS APIs work -->
+  <span class="wa-dz-js-only">👁</span>
+  <span class="wa-dz-count wa-dz-js-only" id="wa-dz-views-num"></span>
+  <span class="wa-dz-js-only">زيارة</span>
 </div>
 <script>
-(function () {
+(function(){
   if (window.__WA_DZ_COUNTER_LOADED__) return;
   window.__WA_DZ_COUNTER_LOADED__ = true;
 
   var KEY = "whatsapp-landing-dz-visits";
-  var numEl = null;
-
-  function $(id) { return document.getElementById(id); }
+  var badge = document.getElementById("wa-dz-views-badge");
+  var numEl = document.getElementById("wa-dz-views-num");
 
   function fmt(n) {
-    n = Number(n);
-    if (isNaN(n)) return "—";
-    try { return n.toLocaleString("ar-DZ"); } catch (e) { return String(n); }
+    try { return Number(n).toLocaleString("ar-DZ"); } catch(e) { return String(n); }
   }
-
   function show(n) {
-    numEl = numEl || $("wa-dz-views-num");
-    if (numEl) numEl.textContent = fmt(n);
-    var foot = $("views-count-footer");
+    if (!numEl || n == null) return;
+    numEl.textContent = fmt(n);
+    if (badge) badge.classList.add("wa-dz-js-ready");
+    var foot = document.getElementById("views-count-footer");
     if (foot) foot.textContent = fmt(n);
   }
 
-  function parseValue(data) {
-    if (data == null) return null;
-    if (typeof data === "number") return data;
-    if (typeof data === "object") {
-      if (data.value != null) return data.value;
-      if (data.count != null) return data.count;
-    }
-    return null;
-  }
-
-  function tryFetch(url) {
+  function getJSON(url) {
     return fetch(url, { mode: "cors", cache: "no-store", credentials: "omit" })
-      .then(function (r) {
-        if (!r.ok) throw new Error("http " + r.status);
-        return r.json();
-      })
-      .then(function (d) {
-        var v = parseValue(d);
-        if (v == null) throw new Error("no value");
+      .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+      .then(function(d){
+        var v = (d && (d.value != null ? d.value : d.count));
+        if (v == null) throw 0;
         return v;
       });
   }
 
-  // Multiple backends so ad-blockers / outages don't kill the counter
-  var endpointsHit = [
+  var hitUrls = [
     "https://countapi.mileshilliard.com/api/v1/hit/" + KEY,
     "https://abacus.jasoncameron.dev/hit/whatsapp-landing-dz/visits"
   ];
-  var endpointsGet = [
+  var getUrls = [
     "https://countapi.mileshilliard.com/api/v1/get/" + KEY,
     "https://abacus.jasoncameron.dev/get/whatsapp-landing-dz/visits"
   ];
 
-  function chain(urls, i) {
-    if (i >= urls.length) return Promise.reject(new Error("all failed"));
-    return tryFetch(urls[i]).catch(function () { return chain(urls, i + 1); });
+  function firstOk(urls, i) {
+    if (i >= urls.length) return Promise.reject();
+    return getJSON(urls[i]).catch(function(){ return firstOk(urls, i+1); });
   }
 
   function run() {
-    numEl = $("wa-dz-views-num");
     var already = false;
-    try { already = !!sessionStorage.getItem("wa-dz-hit-" + KEY); } catch (e) {}
-
-    var urls = already ? endpointsGet : endpointsHit;
-    if (!already) {
-      try { sessionStorage.setItem("wa-dz-hit-" + KEY, "1"); } catch (e) {}
-    }
-
-    chain(urls, 0)
-      .then(function (v) { show(v); })
-      .catch(function () {
-        // Last resort: image badge (works even when fetch is blocked)
-        var badge = $("wa-dz-views-badge");
-        if (badge && !badge.querySelector("img.wa-dz-fallback")) {
-          var img = document.createElement("img");
-          img.className = "wa-dz-fallback";
-          img.alt = "visitors";
-          img.src = "https://visitor-badge.laobi.icu/badge?page_id=Mourad-Soltani.whatsapp-landing-dz&left_text=Visitors&left_color=%2318181b&right_color=%2316a34a";
-          // Replace number area with badge image
-          if (numEl) {
-            numEl.style.display = "none";
-            numEl.parentNode.insertBefore(img, numEl);
-          }
-        }
-      });
+    try { already = !!sessionStorage.getItem("wa-dz-hit-" + KEY); } catch(e){}
+    var urls = already ? getUrls : hitUrls;
+    if (!already) { try { sessionStorage.setItem("wa-dz-hit-" + KEY, "1"); } catch(e){} }
+    firstOk(urls, 0).then(show).catch(function(){ /* image badge already visible */ });
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", run);
-  } else {
-    // small delay so React mount doesn't fight us
-    setTimeout(run, 50);
-  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", run);
+  else setTimeout(run, 30);
 })();
 </script>
 </body>
