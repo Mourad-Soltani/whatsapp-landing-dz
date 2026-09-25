@@ -47,3 +47,18 @@ https://wa.me/213663922680?text=سلام%20احمد%20عجبني%20الفصل%20
 ---
 
 **ملاحظة**: هذه صفحة تسويقية جاهزة. تأكد من تحديث رقم الواتساب والرسائل حسب احتياجك.
+
+## 📊 Live visitor counter
+
+The page includes a **live page-view counter**:
+
+- Fixed badge (top-left): `👁 X زيارة`
+- Also shown in the footer
+- Powered by [countapi.mileshilliard.com](https://countapi.mileshilliard.com) (free, no signup)
+- Counter key: `whatsapp-landing-dz-visits`
+
+Each page load increments the total. You can check the raw value anytime:
+
+```
+https://countapi.mileshilliard.com/api/v1/get/whatsapp-landing-dz-visits
+```
