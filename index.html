@@ -8,54 +8,51 @@
 
 
 
+
 <style id="wa-dz-counter-styles">
-  /* Isolated from Vercel Analytics / other agents */
   #wa-dz-views-badge {
     position: fixed !important;
     top: 12px !important;
     right: 12px !important;
-    bottom: auto !important;
-    left: auto !important;
     z-index: 2147483000 !important;
     display: flex !important;
     align-items: center !important;
-    gap: 7px !important;
+    gap: 8px !important;
     background: #18181b !important;
     color: #fff !important;
     font-family: Tajawal, system-ui, sans-serif !important;
     font-size: 12px !important;
     font-weight: 800 !important;
-    line-height: 1 !important;
     padding: 8px 14px !important;
     border-radius: 9999px !important;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.28) !important;
-    border: 1px solid rgba(34,197,94,0.5) !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3) !important;
+    border: 1px solid rgba(34,197,94,0.55) !important;
     direction: rtl !important;
     pointer-events: none !important;
-    margin: 0 !important;
-    max-width: none !important;
-    transform: none !important;
+    line-height: 1.2 !important;
   }
   #wa-dz-views-badge .wa-dz-dot {
-    width: 7px !important;
-    height: 7px !important;
-    border-radius: 50% !important;
-    background: #22c55e !important;
-    box-shadow: 0 0 8px rgba(34,197,94,0.85) !important;
-    animation: wa-dz-pulse 1.4s infinite !important;
-    flex-shrink: 0 !important;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #22c55e; flex-shrink: 0;
+    box-shadow: 0 0 8px rgba(34,197,94,0.9);
+    animation: wa-dz-pulse 1.4s infinite;
   }
   @keyframes wa-dz-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.35; }
+    0%,100% { opacity: 1; } 50% { opacity: 0.35; }
   }
   #wa-dz-views-badge .wa-dz-count {
-    font-variant-numeric: tabular-nums !important;
-    min-width: 1.3em !important;
-    text-align: center !important;
     color: #86efac !important;
     font-size: 14px !important;
     font-weight: 900 !important;
+    font-variant-numeric: tabular-nums;
+    min-width: 1.2em;
+    text-align: center;
+  }
+  #wa-dz-views-badge img {
+    height: 18px !important;
+    width: auto !important;
+    display: block !important;
+    border: 0 !important;
   }
 </style>
 </head>
@@ -88,6 +85,7 @@ Error generating stack: `+o.message+`
 
 
 
+
 <div id="wa-dz-views-badge" data-wa-dz-counter="1" aria-live="polite" title="زيارات الصفحة">
   <span class="wa-dz-dot"></span>
   <span>👁</span>
@@ -96,52 +94,99 @@ Error generating stack: `+o.message+`
 </div>
 <script>
 (function () {
-  /* Plan Asie visitor counter — isolated from Vercel Analytics */
   if (window.__WA_DZ_COUNTER_LOADED__) return;
   window.__WA_DZ_COUNTER_LOADED__ = true;
 
   var KEY = "whatsapp-landing-dz-visits";
-  var API = "https://countapi.mileshilliard.com/api/v1/";
+  var numEl = null;
+
+  function $(id) { return document.getElementById(id); }
 
   function fmt(n) {
-    try { return Number(n).toLocaleString("ar-DZ"); } catch (e) { return String(n); }
+    n = Number(n);
+    if (isNaN(n)) return "—";
+    try { return n.toLocaleString("ar-DZ"); } catch (e) { return String(n); }
   }
 
-  function set(n) {
-    var el = document.getElementById("wa-dz-views-num");
-    if (el) el.textContent = fmt(n);
-    var foot = document.getElementById("views-count-footer");
+  function show(n) {
+    numEl = numEl || $("wa-dz-views-num");
+    if (numEl) numEl.textContent = fmt(n);
+    var foot = $("views-count-footer");
     if (foot) foot.textContent = fmt(n);
   }
 
-  function hit() {
-    // Only count once per browser tab session (avoids double-count with analytics agents / StrictMode)
-    try {
-      if (sessionStorage.getItem("wa-dz-hit-" + KEY)) {
-        fetch(API + "get/" + KEY, { mode: "cors", cache: "no-store", credentials: "omit" })
-          .then(function (r) { return r.json(); })
-          .then(function (d) { if (d && d.value != null) set(d.value); })
-          .catch(function () {});
-        return;
-      }
-      sessionStorage.setItem("wa-dz-hit-" + KEY, "1");
-    } catch (e) {}
+  function parseValue(data) {
+    if (data == null) return null;
+    if (typeof data === "number") return data;
+    if (typeof data === "object") {
+      if (data.value != null) return data.value;
+      if (data.count != null) return data.count;
+    }
+    return null;
+  }
 
-    fetch(API + "hit/" + KEY, { mode: "cors", cache: "no-store", credentials: "omit" })
-      .then(function (r) { return r.json(); })
-      .then(function (d) { if (d && d.value != null) set(d.value); })
+  function tryFetch(url) {
+    return fetch(url, { mode: "cors", cache: "no-store", credentials: "omit" })
+      .then(function (r) {
+        if (!r.ok) throw new Error("http " + r.status);
+        return r.json();
+      })
+      .then(function (d) {
+        var v = parseValue(d);
+        if (v == null) throw new Error("no value");
+        return v;
+      });
+  }
+
+  // Multiple backends so ad-blockers / outages don't kill the counter
+  var endpointsHit = [
+    "https://countapi.mileshilliard.com/api/v1/hit/" + KEY,
+    "https://abacus.jasoncameron.dev/hit/whatsapp-landing-dz/visits"
+  ];
+  var endpointsGet = [
+    "https://countapi.mileshilliard.com/api/v1/get/" + KEY,
+    "https://abacus.jasoncameron.dev/get/whatsapp-landing-dz/visits"
+  ];
+
+  function chain(urls, i) {
+    if (i >= urls.length) return Promise.reject(new Error("all failed"));
+    return tryFetch(urls[i]).catch(function () { return chain(urls, i + 1); });
+  }
+
+  function run() {
+    numEl = $("wa-dz-views-num");
+    var already = false;
+    try { already = !!sessionStorage.getItem("wa-dz-hit-" + KEY); } catch (e) {}
+
+    var urls = already ? endpointsGet : endpointsHit;
+    if (!already) {
+      try { sessionStorage.setItem("wa-dz-hit-" + KEY, "1"); } catch (e) {}
+    }
+
+    chain(urls, 0)
+      .then(function (v) { show(v); })
       .catch(function () {
-        fetch(API + "get/" + KEY, { mode: "cors", cache: "no-store", credentials: "omit" })
-          .then(function (r) { return r.json(); })
-          .then(function (d) { if (d && d.value != null) set(d.value); })
-          .catch(function () { set("—"); });
+        // Last resort: image badge (works even when fetch is blocked)
+        var badge = $("wa-dz-views-badge");
+        if (badge && !badge.querySelector("img.wa-dz-fallback")) {
+          var img = document.createElement("img");
+          img.className = "wa-dz-fallback";
+          img.alt = "visitors";
+          img.src = "https://visitor-badge.laobi.icu/badge?page_id=Mourad-Soltani.whatsapp-landing-dz&left_text=Visitors&left_color=%2318181b&right_color=%2316a34a";
+          // Replace number area with badge image
+          if (numEl) {
+            numEl.style.display = "none";
+            numEl.parentNode.insertBefore(img, numEl);
+          }
+        }
       });
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", hit);
+    document.addEventListener("DOMContentLoaded", run);
   } else {
-    hit();
+    // small delay so React mount doesn't fight us
+    setTimeout(run, 50);
   }
 })();
 </script>
