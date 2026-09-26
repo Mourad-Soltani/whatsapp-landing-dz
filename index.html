@@ -163,5 +163,38 @@ Error generating stack: `+o.message+`
   else setTimeout(run, 30);
 })();
 </script>
+
+<script>
+(function(){
+  if (window.__WA_DZ_GEO__) return;
+  window.__WA_DZ_GEO__ = true;
+  var NS = "whatsapp-landing-dz";
+  function hit(code){
+    if (!code || code.length !== 2) return;
+    code = String(code).toUpperCase();
+    try {
+      var k = "geo-hit-" + NS + "-" + code;
+      if (sessionStorage.getItem(k)) return;
+      sessionStorage.setItem(k, "1");
+    } catch(e) {}
+    var url = "https://countapi.mileshilliard.com/api/v1/hit/" + NS + "-cc-" + code;
+    fetch(url, { mode: "cors", cache: "no-store", credentials: "omit" }).catch(function(){});
+    // remember last country for dashboard hint
+    try { localStorage.setItem(NS + "-last-cc", code); } catch(e) {}
+  }
+  // Multiple geo providers (fallback)
+  function fromIpapi(){
+    return fetch("https://ipapi.co/json/", { cache: "no-store" })
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if (d && d.country_code) hit(d.country_code); else throw 0; });
+  }
+  function fromCountryIs(){
+    return fetch("https://api.country.is/", { cache: "no-store" })
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if (d && d.country) hit(d.country); });
+  }
+  fromIpapi().catch(function(){ return fromCountryIs(); }).catch(function(){});
+})();
+</script>
 </body>
 </html>

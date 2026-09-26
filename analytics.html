@@ -69,7 +69,7 @@
     </div>
 
     <div class="panels">
-      <div class="card panel"><h2>🌍 الدول</h2><div id="countries"><div class="empty">جاري التحميل…</div></div></div>
+      <div class="card panel"><h2>🌍 الدول</h2><div id="countries"><div class="empty">جاري تحميل الدول (عداد مستقل)…</div></div></div>
       <div class="card panel"><h2>📱 الأجهزة</h2><div id="devices"><div class="empty">جاري التحميل…</div></div></div>
       <div class="card panel"><h2>🌐 المتصفحات</h2><div id="browsers"><div class="empty">جاري التحميل…</div></div></div>
       <div class="card panel"><h2>💻 أنظمة التشغيل</h2><div id="os"><div class="empty">جاري التحميل…</div></div></div>
@@ -82,32 +82,34 @@
   <script>
   (function () {
     var days = 3;
-    var COUNTRY_AR = {
-      Algeria:"الجزائر", Morocco:"المغرب", Tunisia:"تونس", Egypt:"مصر",
-      "Saudi Arabia":"السعودية", "United Arab Emirates":"الإمارات", France:"فرنسا",
-      "United States":"أمريكا", Germany:"ألمانيا", "United Kingdom":"بريطانيا",
-      Canada:"كندا", Turkey:"تركيا", Qatar:"قطر", Kuwait:"الكويت",
-      Bahrain:"البحرين", Oman:"عمان", Jordan:"الأردن", Lebanon:"لبنان",
-      UNKNOWN:"غير معروف", Other:"أخرى", Algeria:"الجزائر"
-    };
+    var NS = "whatsapp-landing-dz";
+    var COUNTRY_LIST = [
+      ["DZ","الجزائر"],["MA","المغرب"],["TN","تونس"],["EG","مصر"],
+      ["SA","السعودية"],["AE","الإمارات"],["QA","قطر"],["KW","الكويت"],
+      ["BH","البحرين"],["OM","عمان"],["JO","الأردن"],["LB","لبنان"],
+      ["LY","ليبيا"],["MR","موريتانيا"],["SD","السودان"],["IQ","العراق"],
+      ["FR","فرنسا"],["US","أمريكا"],["DE","ألمانيا"],["GB","بريطانيا"],
+      ["CA","كندا"],["TR","تركيا"],["IT","إيطاليا"],["ES","إسبانيا"],
+      ["BE","بلجيكا"],["NL","هولندا"],["CH","سويسرا"],["SE","السويد"]
+    ];
+    var COUNTRY_AR = {};
+    COUNTRY_LIST.forEach(function (x) { COUNTRY_AR[x[0]] = x[1]; COUNTRY_AR[x[1]] = x[1]; });
 
     function fmt(n) {
       if (n == null || isNaN(n)) return "—";
       try { return Number(n).toLocaleString("ar-DZ"); } catch (e) { return String(n); }
     }
-
     function pick(metrics, name) {
       if (!Array.isArray(metrics)) return null;
       for (var i = 0; i < metrics.length; i++) if (metrics[i].metricName === name) return metrics[i];
       return null;
     }
-
     function rowsFrom(metric) {
       var info = (metric && metric.information) || [];
       var rows = [];
       for (var i = 0; i < info.length; i++) {
         var it = info[i];
-        var label = it.Country || it.country || it.name || it.Name || it.Browser || it.Device || it.OS || it.url || "—";
+        var label = it.Country || it.country || it.name || it.Name || it.Browser || it.Device || it.OS || "—";
         var value = it.sessionsCount != null ? it.sessionsCount
           : (it.totalSessionCount != null ? it.totalSessionCount
           : (it.pagesViews != null ? it.pagesViews : it.subTotal));
@@ -117,32 +119,49 @@
       rows.sort(function (a, b) { return b.value - a.value; });
       return rows;
     }
-
     function renderTable(el, rows, map) {
       if (!rows || !rows.length) {
-        el.innerHTML = '<div class="empty">لا بيانات تفصيلية بعد في هذه الفترة.<br>يحتاج زيارات حقيقية — أو انتظر إعادة ضبط حد Clarity API.</div>';
+        el.innerHTML = '<div class="empty">لا بيانات بعد — افتح صفحة الهبوط من هاتفك لتسجيل أول دولة.</div>';
         return;
       }
       var max = Math.max.apply(null, rows.map(function (r) { return r.value; })) || 1;
       var html = "<table><thead><tr><th>الاسم</th><th>العدد</th></tr></thead><tbody>";
-      rows.slice(0, 12).forEach(function (r) {
+      rows.slice(0, 15).forEach(function (r) {
+        var code = r.code || "";
         var name = (map && map[r.label]) || r.label;
+        var flag = code ? '<img src="https://flagcdn.com/24x18/' + code.toLowerCase() + '.png" width="24" height="18" alt="" style="border-radius:2px;vertical-align:middle;margin-left:8px" onerror="this.style.display=\'none\'">' : "";
         var pct = Math.round((r.value / max) * 100);
-        html += "<tr><td>" + name + '<div class="bar-wrap"><div class="bar" style="width:' + pct + '%"></div></div></td><td class="num">' + fmt(r.value) + "</td></tr>";
+        html += "<tr><td>" + flag + name + '<div class="bar-wrap"><div class="bar" style="width:' + pct + '%"></div></div></td><td class="num">' + fmt(r.value) + "</td></tr>";
       });
       html += "</tbody></table>";
       el.innerHTML = html;
     }
-
     async function api(path) {
       var r = await fetch(path, { cache: "no-store" });
       var j = await r.json().catch(function () { return {}; });
       return { ok: r.ok, status: r.status, body: j };
     }
 
+    // Always-on countries via countapi (no Clarity limit)
+    async function loadCountriesAlways() {
+      var rows = [];
+      await Promise.all(COUNTRY_LIST.map(function (pair) {
+        var code = pair[0], name = pair[1];
+        return fetch("https://countapi.mileshilliard.com/api/v1/get/" + NS + "-cc-" + code, { cache: "no-store", mode: "cors" })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            if (d && d.value > 0) rows.push({ label: name, code: code, value: Number(d.value) });
+          })
+          .catch(function () {});
+      }));
+      rows.sort(function (a, b) { return b.value - a.value; });
+      renderTable(document.getElementById("countries"), rows, COUNTRY_AR);
+      return rows.length;
+    }
+
     async function loadTotal() {
       try {
-        var r = await fetch("https://countapi.mileshilliard.com/api/v1/get/whatsapp-landing-dz-visits", { cache: "no-store" });
+        var r = await fetch("https://countapi.mileshilliard.com/api/v1/get/" + NS + "-visits", { cache: "no-store" });
         var j = await r.json();
         if (j && j.value != null) document.getElementById("kpiTotal").textContent = fmt(j.value);
       } catch (e) {
@@ -158,61 +177,37 @@
       notice.style.display = "none";
 
       await loadTotal();
+      var nCountries = await loadCountriesAlways();
 
-      // Only 2 Clarity calls total (base + country) — avoids daily rate limit
+      // Clarity is optional bonus (may be rate-limited)
       var base = await api("/api/clarity?days=" + days);
-      var country = await api("/api/clarity?days=" + days + "&dimension=Country");
-
       if (base.status === 429 || (base.body && base.body.status === 429)) {
         notice.style.display = "block";
-        notice.textContent = "⚠️ تم بلوغ الحد اليومي لـ Clarity API. إجمالي الزيارات يظهر من العداد العام. التفاصيل (دول/أجهزة) ستعود خلال ساعات أو غداً.";
-        status.className = "status err";
-        status.textContent = "حد API — التفاصيل مؤقتاً غير متاحة";
-        return;
-      }
-
-      if (!base.ok || !base.body.ok) {
-        status.className = "status err";
-        status.textContent = "خطأ: " + ((base.body && base.body.error) || base.status);
-        return;
-      }
-
-      var metrics = base.body.metrics || [];
-
-      // KPIs from Traffic / ScrollDepth / EngagementTime
-      var traffic = pick(metrics, "Traffic");
-      var t0 = traffic && traffic.information && traffic.information[0];
-      document.getElementById("kpiSessions").textContent = fmt(t0 && (t0.totalSessionCount || t0.sessionsCount));
-      document.getElementById("kpiUsers").textContent = fmt(t0 && t0.distinctUserCount);
-
-      var scroll = pick(metrics, "ScrollDepth");
-      var s0 = scroll && scroll.information && scroll.information[0];
-      document.getElementById("kpiScroll").textContent =
-        s0 && s0.averageScrollDepth != null ? Math.round(s0.averageScrollDepth) + "%" : "—";
-
-      // Device / Browser / OS often included in base response
-      renderTable(document.getElementById("devices"), rowsFrom(pick(metrics, "Device")));
-      renderTable(document.getElementById("browsers"), rowsFrom(pick(metrics, "Browser")));
-      renderTable(document.getElementById("os"), rowsFrom(pick(metrics, "OS")));
-
-      // Countries from second call
-      if (country.ok && country.body && country.body.ok) {
-        var cm = country.body.metrics || [];
-        var cRows = rowsFrom(pick(cm, "Traffic"));
-        if (!cRows.length) {
-          for (var i = 0; i < cm.length; i++) {
-            cRows = rowsFrom(cm[i]);
-            if (cRows.length) break;
-          }
-        }
-        renderTable(document.getElementById("countries"), cRows, COUNTRY_AR);
+        notice.textContent = "ℹ️ تفاصيل Clarity (أجهزة/متصفحات) محدودة اليوم بسبب حد API المجاني. الدول والزيارات تعمل دائماً من العداد المستقل.";
+      } else if (base.ok && base.body && base.body.ok) {
+        var metrics = base.body.metrics || [];
+        var traffic = pick(metrics, "Traffic");
+        var t0 = traffic && traffic.information && traffic.information[0];
+        document.getElementById("kpiSessions").textContent = fmt(t0 && (t0.totalSessionCount || t0.sessionsCount));
+        document.getElementById("kpiUsers").textContent = fmt(t0 && t0.distinctUserCount);
+        var scroll = pick(metrics, "ScrollDepth");
+        var s0 = scroll && scroll.information && scroll.information[0];
+        document.getElementById("kpiScroll").textContent =
+          s0 && s0.averageScrollDepth != null ? Math.round(s0.averageScrollDepth) + "%" : "—";
+        renderTable(document.getElementById("devices"), rowsFrom(pick(metrics, "Device")));
+        renderTable(document.getElementById("browsers"), rowsFrom(pick(metrics, "Browser")));
+        renderTable(document.getElementById("os"), rowsFrom(pick(metrics, "OS")));
       } else {
-        document.getElementById("countries").innerHTML =
-          '<div class="empty">تعذر تحميل الدول حالياً</div>';
+        document.getElementById("kpiSessions").textContent = "—";
+        document.getElementById("kpiUsers").textContent = "—";
+        document.getElementById("kpiScroll").textContent = "—";
+        ["devices","browsers","os"].forEach(function(id){
+          document.getElementById(id).innerHTML = '<div class="empty">متاح عند عمل Clarity API</div>';
+        });
       }
 
       status.textContent = "آخر تحديث: " + new Date().toLocaleString("ar-DZ") +
-        " · آخر " + days + " يوم · التخزين المؤقت 10 دقائق";
+        " · دول مسجّلة: " + nCountries + " · تحديث كل 10 دقائق";
     }
 
     document.getElementById("dayTabs").addEventListener("click", function (e) {
@@ -225,7 +220,7 @@
     });
 
     refresh();
-    setInterval(refresh, 10 * 60 * 1000); // every 10 min, not every minute
+    setInterval(refresh, 10 * 60 * 1000);
   })();
   </script>
 </body>
