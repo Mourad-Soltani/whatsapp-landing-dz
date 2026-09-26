@@ -4,93 +4,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>لوحة التحليلات المباشرة | خطة آسيا</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0b0f14;
-      --card: #121820;
-      --border: rgba(255,255,255,0.08);
-      --text: #f4f7fb;
-      --muted: #8b9bb0;
-      --green: #22c55e;
-      --green-dim: rgba(34,197,94,0.15);
-      --blue: #38bdf8;
+      --bg:#0b0f14; --card:#121820; --border:rgba(255,255,255,.08);
+      --text:#f4f7fb; --muted:#8b9bb0; --green:#22c55e; --green-dim:rgba(34,197,94,.15); --blue:#38bdf8;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Tajawal, system-ui, sans-serif;
-      background: radial-gradient(1200px 600px at 80% -10%, rgba(34,197,94,0.12), transparent),
-                  radial-gradient(900px 500px at 0% 100%, rgba(56,189,248,0.08), transparent),
-                  var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 24px 16px 48px;
-    }
-    .wrap { max-width: 1100px; margin: 0 auto; }
-    header {
-      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-      gap: 16px; margin-bottom: 28px;
-    }
-    h1 { font-size: 1.5rem; font-weight: 900; }
-    .sub { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
-    .badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--green-dim); color: var(--green);
-      border: 1px solid rgba(34,197,94,0.35);
-      padding: 8px 14px; border-radius: 999px; font-weight: 800; font-size: 0.85rem;
-    }
-    .dot {
-      width: 8px; height: 8px; border-radius: 50%; background: var(--green);
-      box-shadow: 0 0 10px var(--green); animation: pulse 1.4s infinite;
-    }
-    @keyframes pulse { 50% { opacity: 0.35; } }
-    .grid {
-      display: grid; gap: 14px;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      margin-bottom: 20px;
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px;
-    }
-    .card .label { color: var(--muted); font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; }
-    .card .value { font-size: 1.85rem; font-weight: 900; letter-spacing: -0.02em; }
-    .card .hint { color: var(--muted); font-size: 0.75rem; margin-top: 6px; }
-    .panels {
-      display: grid; gap: 14px;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    }
-    .panel h2 {
-      font-size: 1rem; font-weight: 800; margin-bottom: 14px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-    th, td { text-align: right; padding: 10px 6px; border-bottom: 1px solid var(--border); }
-    th { color: var(--muted); font-weight: 700; font-size: 0.75rem; }
-    td.num { font-weight: 800; font-variant-numeric: tabular-nums; color: var(--blue); }
-    .bar-wrap { background: rgba(255,255,255,0.06); border-radius: 6px; height: 6px; overflow: hidden; margin-top: 4px; }
-    .bar { height: 100%; background: linear-gradient(90deg, var(--green), var(--blue)); border-radius: 6px; }
-    .empty {
-      color: var(--muted); font-size: 0.9rem; padding: 20px 0; text-align: center; line-height: 1.7;
-    }
-    .footer {
-      margin-top: 28px; text-align: center; color: var(--muted); font-size: 0.8rem;
-    }
-    .footer a { color: var(--green); text-decoration: none; font-weight: 700; }
-    .status { font-size: 0.8rem; color: var(--muted); margin-top: 12px; }
-    .status.err { color: #f87171; }
-    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-    .tabs button {
-      background: var(--card); border: 1px solid var(--border); color: var(--muted);
-      padding: 8px 14px; border-radius: 999px; font-family: inherit; font-weight: 700;
-      cursor: pointer; font-size: 0.85rem;
-    }
-    .tabs button.active {
-      background: var(--green-dim); color: var(--green); border-color: rgba(34,197,94,0.4);
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Tajawal,system-ui,sans-serif;background:radial-gradient(1200px 600px at 80% -10%,rgba(34,197,94,.12),transparent),var(--bg);color:var(--text);min-height:100vh;padding:24px 16px 48px}
+    .wrap{max-width:1100px;margin:0 auto}
+    header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px}
+    h1{font-size:1.5rem;font-weight:900}
+    .sub{color:var(--muted);font-size:.9rem;margin-top:4px}
+    .badge{display:inline-flex;align-items:center;gap:8px;background:var(--green-dim);color:var(--green);border:1px solid rgba(34,197,94,.35);padding:8px 14px;border-radius:999px;font-weight:800;font-size:.85rem}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 1.4s infinite}
+    @keyframes pulse{50%{opacity:.35}}
+    .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-bottom:20px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px}
+    .card .label{color:var(--muted);font-size:.8rem;font-weight:700;margin-bottom:8px}
+    .card .value{font-size:1.85rem;font-weight:900}
+    .card .hint{color:var(--muted);font-size:.75rem;margin-top:6px}
+    .panels{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+    .panel h2{font-size:1rem;font-weight:800;margin-bottom:14px}
+    table{width:100%;border-collapse:collapse;font-size:.9rem}
+    th,td{text-align:right;padding:10px 6px;border-bottom:1px solid var(--border)}
+    th{color:var(--muted);font-weight:700;font-size:.75rem}
+    td.num{font-weight:800;font-variant-numeric:tabular-nums;color:var(--blue)}
+    .bar-wrap{background:rgba(255,255,255,.06);border-radius:6px;height:6px;overflow:hidden;margin-top:4px}
+    .bar{height:100%;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:6px}
+    .empty{color:var(--muted);font-size:.9rem;padding:20px 0;text-align:center;line-height:1.7}
+    .footer{margin-top:28px;text-align:center;color:var(--muted);font-size:.8rem}
+    .footer a{color:var(--green);text-decoration:none;font-weight:700}
+    .status{font-size:.8rem;color:var(--muted);margin-top:12px}
+    .status.err{color:#f87171}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    .tabs button{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:8px 14px;border-radius:999px;font-family:inherit;font-weight:700;cursor:pointer;font-size:.85rem}
+    .tabs button.active{background:var(--green-dim);color:var(--green);border-color:rgba(34,197,94,.4)}
+    .notice{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:#fca5a5;padding:12px 16px;border-radius:12px;margin-bottom:16px;font-size:.9rem;display:none}
   </style>
 </head>
 <body>
@@ -98,10 +48,12 @@
     <header>
       <div>
         <h1>📊 لوحة التحليلات المباشرة</h1>
-        <p class="sub">خطة آسيا • بيانات Microsoft Clarity + عداد الزيارات</p>
+        <p class="sub">خطة آسيا • Microsoft Clarity + عداد الزيارات</p>
       </div>
       <div class="badge"><span class="dot"></span> بث مباشر</div>
     </header>
+
+    <div class="notice" id="notice"></div>
 
     <div class="tabs" id="dayTabs">
       <button type="button" data-days="1">آخر 24 ساعة</button>
@@ -109,50 +61,34 @@
       <button type="button" data-days="3" class="active">آخر 72 ساعة</button>
     </div>
 
-    <div class="grid" id="kpis">
-      <div class="card"><div class="label">إجمالي الزيارات (كل الوقت)</div><div class="value" id="kpiTotal">…</div><div class="hint">من العداد العام</div></div>
+    <div class="grid">
+      <div class="card"><div class="label">إجمالي الزيارات (كل الوقت)</div><div class="value" id="kpiTotal">…</div><div class="hint">عداد عام — يعمل دائماً</div></div>
       <div class="card"><div class="label">جلسات Clarity</div><div class="value" id="kpiSessions">…</div><div class="hint">الفترة المحددة</div></div>
-      <div class="card"><div class="label">مشاهدات الصفحات</div><div class="value" id="kpiViews">…</div><div class="hint">الفترة المحددة</div></div>
+      <div class="card"><div class="label">زوار فريدون</div><div class="value" id="kpiUsers">…</div><div class="hint">Distinct users</div></div>
       <div class="card"><div class="label">عمق التمرير</div><div class="value" id="kpiScroll">…</div><div class="hint">متوسط %</div></div>
     </div>
 
     <div class="panels">
-      <div class="card panel">
-        <h2>🌍 الدول</h2>
-        <div id="countries"><div class="empty">جاري التحميل…</div></div>
-      </div>
-      <div class="card panel">
-        <h2>📱 الأجهزة</h2>
-        <div id="devices"><div class="empty">جاري التحميل…</div></div>
-      </div>
-      <div class="card panel">
-        <h2>🌐 المتصفحات</h2>
-        <div id="browsers"><div class="empty">جاري التحميل…</div></div>
-      </div>
-      <div class="card panel">
-        <h2>💻 أنظمة التشغيل</h2>
-        <div id="os"><div class="empty">جاري التحميل…</div></div>
-      </div>
+      <div class="card panel"><h2>🌍 الدول</h2><div id="countries"><div class="empty">جاري التحميل…</div></div></div>
+      <div class="card panel"><h2>📱 الأجهزة</h2><div id="devices"><div class="empty">جاري التحميل…</div></div></div>
+      <div class="card panel"><h2>🌐 المتصفحات</h2><div id="browsers"><div class="empty">جاري التحميل…</div></div></div>
+      <div class="card panel"><h2>💻 أنظمة التشغيل</h2><div id="os"><div class="empty">جاري التحميل…</div></div></div>
     </div>
 
     <p class="status" id="status">تحديث…</p>
-    <p class="footer">
-      <a href="/">← العودة لصفحة الهبوط</a>
-      · البيانات من Microsoft Clarity API
-      · يُحدَّث تلقائياً كل دقيقة
-    </p>
+    <p class="footer"><a href="/">← العودة لصفحة الهبوط</a> · تحديث كل 10 دقائق لتجنب حد Clarity</p>
   </div>
 
   <script>
   (function () {
     var days = 3;
     var COUNTRY_AR = {
-      DZ: "الجزائر", MA: "المغرب", TN: "تونس", EG: "مصر", SA: "السعودية",
-      AE: "الإمارات", FR: "فرنسا", US: "أمريكا", DE: "ألمانيا", GB: "بريطانيا",
-      CA: "كندا", IT: "إيطاليا", ES: "إسبانيا", TR: "تركيا", QA: "قطر",
-      KW: "الكويت", BH: "البحرين", OM: "عمان", JO: "الأردن", LB: "لبنان",
-      SY: "سوريا", IQ: "العراق", LY: "ليبيا", MR: "موريتانيا", SD: "السودان",
-      UNKNOWN: "غير معروف", Other: "أخرى"
+      Algeria:"الجزائر", Morocco:"المغرب", Tunisia:"تونس", Egypt:"مصر",
+      "Saudi Arabia":"السعودية", "United Arab Emirates":"الإمارات", France:"فرنسا",
+      "United States":"أمريكا", Germany:"ألمانيا", "United Kingdom":"بريطانيا",
+      Canada:"كندا", Turkey:"تركيا", Qatar:"قطر", Kuwait:"الكويت",
+      Bahrain:"البحرين", Oman:"عمان", Jordan:"الأردن", Lebanon:"لبنان",
+      UNKNOWN:"غير معروف", Other:"أخرى", Algeria:"الجزائر"
     };
 
     function fmt(n) {
@@ -160,84 +96,51 @@
       try { return Number(n).toLocaleString("ar-DZ"); } catch (e) { return String(n); }
     }
 
-    function pickMetric(metrics, name) {
+    function pick(metrics, name) {
       if (!Array.isArray(metrics)) return null;
-      for (var i = 0; i < metrics.length; i++) {
-        if (metrics[i].metricName === name) return metrics[i];
-      }
+      for (var i = 0; i < metrics.length; i++) if (metrics[i].metricName === name) return metrics[i];
       return null;
     }
 
-    function rowsFromMetric(metric, labelKey) {
+    function rowsFrom(metric) {
       var info = (metric && metric.information) || [];
       var rows = [];
       for (var i = 0; i < info.length; i++) {
-        var item = info[i];
-        var label = item[labelKey] || item.Name || item.name || item.country || item.Browser || item.Device || item.OS || item.url || "—";
-        var sessions = item.sessionsCount != null ? item.sessionsCount : (item.totalSessionCount != null ? item.totalSessionCount : null);
-        var views = item.pagesViews != null ? item.pagesViews : null;
-        var sub = item.subTotal != null ? item.subTotal : null;
-        var value = sessions != null ? sessions : (views != null ? views : sub);
-        if (value == null && item.averageScrollDepth != null) value = item.averageScrollDepth;
-        rows.push({ label: String(label), value: value, sessions: sessions, views: views });
+        var it = info[i];
+        var label = it.Country || it.country || it.name || it.Name || it.Browser || it.Device || it.OS || it.url || "—";
+        var value = it.sessionsCount != null ? it.sessionsCount
+          : (it.totalSessionCount != null ? it.totalSessionCount
+          : (it.pagesViews != null ? it.pagesViews : it.subTotal));
+        if (value == null) continue;
+        rows.push({ label: String(label), value: Number(value) });
       }
-      rows.sort(function (a, b) { return (b.value || 0) - (a.value || 0); });
+      rows.sort(function (a, b) { return b.value - a.value; });
       return rows;
     }
 
-    function renderTable(el, rows, mapLabel) {
+    function renderTable(el, rows, map) {
       if (!rows || !rows.length) {
-        el.innerHTML = '<div class="empty">لا توجد بيانات بعد في هذه الفترة.<br>Clarity يحتاج زيارات حقيقية لبضع ساعات.</div>';
+        el.innerHTML = '<div class="empty">لا بيانات تفصيلية بعد في هذه الفترة.<br>يحتاج زيارات حقيقية — أو انتظر إعادة ضبط حد Clarity API.</div>';
         return;
       }
-      var max = Math.max.apply(null, rows.map(function (r) { return r.value || 0; })) || 1;
+      var max = Math.max.apply(null, rows.map(function (r) { return r.value; })) || 1;
       var html = "<table><thead><tr><th>الاسم</th><th>العدد</th></tr></thead><tbody>";
-      for (var i = 0; i < Math.min(rows.length, 12); i++) {
-        var r = rows[i];
-        var name = mapLabel ? (mapLabel[r.label] || r.label) : r.label;
-        var pct = Math.round(((r.value || 0) / max) * 100);
-        html += "<tr><td>" + name +
-          '<div class="bar-wrap"><div class="bar" style="width:' + pct + '%"></div></div></td>' +
-          '<td class="num">' + fmt(r.value) + "</td></tr>";
-      }
+      rows.slice(0, 12).forEach(function (r) {
+        var name = (map && map[r.label]) || r.label;
+        var pct = Math.round((r.value / max) * 100);
+        html += "<tr><td>" + name + '<div class="bar-wrap"><div class="bar" style="width:' + pct + '%"></div></div></td><td class="num">' + fmt(r.value) + "</td></tr>";
+      });
       html += "</tbody></table>";
       el.innerHTML = html;
     }
 
-    function sumTraffic(metrics) {
-      var t = pickMetric(metrics, "Traffic");
-      var info = (t && t.information) || [];
-      var sessions = 0, views = 0;
-      for (var i = 0; i < info.length; i++) {
-        sessions += Number(info[i].sessionsCount || info[i].totalSessionCount || 0);
-        views += Number(info[i].pagesViews || 0);
-      }
-      // fallback: aggregate from any metric with sessions
-      if (sessions === 0) {
-        metrics.forEach(function (m) {
-          (m.information || []).forEach(function (it) {
-            if (it.sessionsCount) sessions += Number(it.sessionsCount);
-            if (it.pagesViews) views += Number(it.pagesViews);
-          });
-        });
-      }
-      var scroll = pickMetric(metrics, "ScrollDepth");
-      var avgScroll = null;
-      if (scroll && scroll.information && scroll.information[0]) {
-        avgScroll = scroll.information[0].averageScrollDepth;
-      }
-      return { sessions: sessions, views: views, scroll: avgScroll };
+    async function api(path) {
+      var r = await fetch(path, { cache: "no-store" });
+      var j = await r.json().catch(function () { return {}; });
+      return { ok: r.ok, status: r.status, body: j };
     }
 
-    async function fetchClarity(dimension) {
-      var url = "/api/clarity?days=" + days + (dimension ? "&dimension=" + encodeURIComponent(dimension) : "");
-      var r = await fetch(url, { cache: "no-store" });
-      var j = await r.json();
-      if (!r.ok || !j.ok) throw new Error(j.error || ("HTTP " + r.status));
-      return j.metrics;
-    }
-
-    async function loadTotalViews() {
+    async function loadTotal() {
       try {
         var r = await fetch("https://countapi.mileshilliard.com/api/v1/get/whatsapp-landing-dz-visits", { cache: "no-store" });
         var j = await r.json();
@@ -249,62 +152,67 @@
 
     async function refresh() {
       var status = document.getElementById("status");
+      var notice = document.getElementById("notice");
       status.className = "status";
       status.textContent = "جاري التحديث…";
-      try {
-        await loadTotalViews();
+      notice.style.display = "none";
 
-        var base = await fetchClarity("");
-        var traffic = sumTraffic(base);
-        document.getElementById("kpiSessions").textContent = fmt(traffic.sessions);
-        document.getElementById("kpiViews").textContent = fmt(traffic.views);
-        document.getElementById("kpiScroll").textContent =
-          traffic.scroll != null ? (Math.round(traffic.scroll) + "%") : "—";
+      await loadTotal();
 
-        var dims = [
-          { id: "countries", dim: "Country", map: COUNTRY_AR },
-          { id: "devices", dim: "Device", map: null },
-          { id: "browsers", dim: "Browser", map: null },
-          { id: "os", dim: "OS", map: null }
-        ];
+      // Only 2 Clarity calls total (base + country) — avoids daily rate limit
+      var base = await api("/api/clarity?days=" + days);
+      var country = await api("/api/clarity?days=" + days + "&dimension=Country");
 
-        for (var i = 0; i < dims.length; i++) {
-          var d = dims[i];
-          try {
-            var m = await fetchClarity(d.dim);
-            // Prefer Traffic metric rows; else first metric with info
-            var trafficM = pickMetric(m, "Traffic") || m.find(function (x) {
-              return x.information && x.information.length && (x.information[0].sessionsCount != null || x.information[0].pagesViews != null);
-            });
-            var labelKey = d.dim === "Country" ? "Country" :
-              d.dim === "Device" ? "Device" :
-              d.dim === "Browser" ? "Browser" :
-              d.dim === "OS" ? "OS" : "Name";
-            // Try common keys
-            var rows = rowsFromMetric(trafficM, labelKey);
-            if (!rows.length) {
-              for (var k = 0; k < m.length; k++) {
-                rows = rowsFromMetric(m[k], labelKey);
-                if (rows.length) break;
-              }
-            }
-            renderTable(document.getElementById(d.id), rows, d.map);
-          } catch (e) {
-            document.getElementById(d.id).innerHTML =
-              '<div class="empty">تعذر تحميل هذا القسم</div>';
+      if (base.status === 429 || (base.body && base.body.status === 429)) {
+        notice.style.display = "block";
+        notice.textContent = "⚠️ تم بلوغ الحد اليومي لـ Clarity API. إجمالي الزيارات يظهر من العداد العام. التفاصيل (دول/أجهزة) ستعود خلال ساعات أو غداً.";
+        status.className = "status err";
+        status.textContent = "حد API — التفاصيل مؤقتاً غير متاحة";
+        return;
+      }
+
+      if (!base.ok || !base.body.ok) {
+        status.className = "status err";
+        status.textContent = "خطأ: " + ((base.body && base.body.error) || base.status);
+        return;
+      }
+
+      var metrics = base.body.metrics || [];
+
+      // KPIs from Traffic / ScrollDepth / EngagementTime
+      var traffic = pick(metrics, "Traffic");
+      var t0 = traffic && traffic.information && traffic.information[0];
+      document.getElementById("kpiSessions").textContent = fmt(t0 && (t0.totalSessionCount || t0.sessionsCount));
+      document.getElementById("kpiUsers").textContent = fmt(t0 && t0.distinctUserCount);
+
+      var scroll = pick(metrics, "ScrollDepth");
+      var s0 = scroll && scroll.information && scroll.information[0];
+      document.getElementById("kpiScroll").textContent =
+        s0 && s0.averageScrollDepth != null ? Math.round(s0.averageScrollDepth) + "%" : "—";
+
+      // Device / Browser / OS often included in base response
+      renderTable(document.getElementById("devices"), rowsFrom(pick(metrics, "Device")));
+      renderTable(document.getElementById("browsers"), rowsFrom(pick(metrics, "Browser")));
+      renderTable(document.getElementById("os"), rowsFrom(pick(metrics, "OS")));
+
+      // Countries from second call
+      if (country.ok && country.body && country.body.ok) {
+        var cm = country.body.metrics || [];
+        var cRows = rowsFrom(pick(cm, "Traffic"));
+        if (!cRows.length) {
+          for (var i = 0; i < cm.length; i++) {
+            cRows = rowsFrom(cm[i]);
+            if (cRows.length) break;
           }
         }
-
-        status.textContent = "آخر تحديث: " + new Date().toLocaleString("ar-DZ") + " · آخر " + days + " يوم/أيام";
-      } catch (e) {
-        status.className = "status err";
-        status.textContent = "خطأ: " + (e.message || e) +
-          " — تأكد من إضافة CLARITY_API_TOKEN في إعدادات Vercel";
-        ["countries", "devices", "browsers", "os"].forEach(function (id) {
-          document.getElementById(id).innerHTML =
-            '<div class="empty">في انتظار إعداد التوكن على Vercel</div>';
-        });
+        renderTable(document.getElementById("countries"), cRows, COUNTRY_AR);
+      } else {
+        document.getElementById("countries").innerHTML =
+          '<div class="empty">تعذر تحميل الدول حالياً</div>';
       }
+
+      status.textContent = "آخر تحديث: " + new Date().toLocaleString("ar-DZ") +
+        " · آخر " + days + " يوم · التخزين المؤقت 10 دقائق";
     }
 
     document.getElementById("dayTabs").addEventListener("click", function (e) {
@@ -317,7 +225,7 @@
     });
 
     refresh();
-    setInterval(refresh, 60000);
+    setInterval(refresh, 10 * 60 * 1000); // every 10 min, not every minute
   })();
   </script>
 </body>
