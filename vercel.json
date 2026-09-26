@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "routes": [
+    { "src": "/api/clarity", "dest": "/api/clarity.js" },
+    { "src": "/analytics", "dest": "/analytics.html" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+}

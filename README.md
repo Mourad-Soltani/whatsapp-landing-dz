@@ -71,3 +71,35 @@ Detailed dashboard (views, countries, cities, heatmaps, session recordings):
 - Project ID: `yoav1jlin6`
 - Dashboard: https://clarity.microsoft.com/projects/view/yoav1jlin6/
 - Live site: https://whatsapp-landing-dz.vercel.app/
+
+
+## Public analytics dashboard (Vercel)
+
+Live demo page (no Clarity login required):
+
+- **URL:** `https://whatsapp-landing-dz.vercel.app/analytics`
+- **API:** `/api/clarity` (server-side proxy to Microsoft Clarity Data Export)
+
+### Setup on Vercel (required once)
+
+1. Open [Vercel Dashboard](https://vercel.com) → project `whatsapp-landing-dz`
+2. **Settings → Environment Variables**
+3. Add:
+   - **Name:** `CLARITY_API_TOKEN`
+   - **Value:** *(your Clarity API token from Settings → Data Export)*
+   - Environments: Production + Preview
+4. **Redeploy** the project
+
+Without this env var, `/analytics` still loads but Clarity panels stay empty.
+
+### Security
+
+- The API token is **never** committed to Git.
+- Only the Vercel serverless function (`api/clarity.js`) can read it.
+- Rotate the token in Clarity if it was ever shared in chat.
+
+### What the dashboard shows
+
+- Total lifetime page views (public counter)
+- Sessions / page views / scroll depth (last 1–3 days via Clarity)
+- Breakdown by **Country**, **Device**, **Browser**, **OS**
