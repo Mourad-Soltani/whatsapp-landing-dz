@@ -62,3 +62,12 @@ Each page load increments the total. You can check the raw value anytime:
 ```
 https://countapi.mileshilliard.com/api/v1/get/whatsapp-landing-dz-visits
 ```
+
+
+## Analytics (Microsoft Clarity)
+
+Detailed dashboard (views, countries, cities, heatmaps, session recordings):
+
+- Project ID: `yoav1jlin6`
+- Dashboard: https://clarity.microsoft.com/projects/view/yoav1jlin6/
+- Live site: https://whatsapp-landing-dz.vercel.app/
